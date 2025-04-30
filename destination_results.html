@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Users</title>
+  <script type="module">
+    // Firebase App (the core Firebase SDK)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    // Your Firebase configuration (replace with your own)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBVNJzEZQyY0RCZlkfrqKrKdIggQrx62KU",
+      authDomain: "zorogram-e0eea.firebaseapp.com",
+      projectId: "zorogram-e0eea",
+      storageBucket: "zorogram-e0eea.appspot.com",
+      messagingSenderId: "3495535292",
+      appId: "1:3495535292:web:3c8c21807fbfd1d3d026b9",
+      measurementId: "G-7YFSQZZ72G"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Fetch users collection
+    async function fetchUsers() {
+      const querySnapshot = await getDocs(collection(db, "users"));
+      const usersList = document.getElementById("users");
+      querySnapshot.forEach((doc) => {
+        const user = doc.data();
+        const li = document.createElement("li");
+        li.textContent = JSON.stringify(user);
+        usersList.appendChild(li);
+      });
+    }
+
+    window.onload = fetchUsers;
+  </script>
+</head>
+<body>
+  <h1>Users from Firebase</h1>
+  <ul id="users"></ul>
+</body>
+</html>

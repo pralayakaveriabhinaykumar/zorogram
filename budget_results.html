@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Search Results</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .trip { border: 2px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<h1 id="page-title">Searching by Budget...</h1>
+<div id="resultsContainer"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBVNJzEZQyY0RCZlkfrqKrKdIggQrx62KU",
+  authDomain: "zorogram-e0eea.firebaseapp.com",
+  projectId: "zorogram-e0eea",
+  storageBucket: "zorogram-e0eea.appspot.com",
+  messagingSenderId: "3495535292",
+  appId: "1:3495535292:web:3c8c21807fbfd1d3d026b9",
+  measurementId: "G-7YFSQZZ72G"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const params = new URLSearchParams(window.location.search);
+const min = Number(params.get('min'));
+const max = Number(params.get('max'));
+
+const resultsContainer = document.getElementById('resultsContainer');
+
+if (!min || !max) {
+  document.getElementById('page-title').textContent = "Invalid budget range.";
+} else {
+  document.getElementById('page-title').textContent = `Trips between ₹${min} - ₹${max}`;
+
+  // Search across all users
+  db.listCollections().then(users => {
+    users.forEach(user => {
+      db.collection(user.id).get().then(trips => {
+        trips.forEach(async trip => {
+          let totalCost = 0;
+          const totalDays = trip.data().total_days;
+          if (totalDays) {
+            for (let i = 1; i <= totalDays; i++) {
+              const travelDoc = await db.collection(user.id).doc(trip.id).collection(`Day ${i}`).doc('Travel').get();
+              const accommodationDoc = await db.collection(user.id).doc(trip.id).collection(`Day ${i}`).doc('Accommodation').get();
+              const foodDoc = await db.collection(user.id).doc(trip.id).collection(`Day ${i}`).doc('Food').get();
+              
+              if (travelDoc.exists) totalCost += travelDoc.data()?.cost || 0;
+              if (accommodationDoc.exists) totalCost += accommodationDoc.data()?.hotelCost || 0;
+              if (foodDoc.exists) {
+                const foodData = foodDoc.data();
+                ['Breakfast', 'Lunch', 'Dinner', 'Snack'].forEach(meal => {
+                  if (foodData[meal]) {
+                    foodData[meal].forEach(item => {
+                      totalCost += item.itemPrice || 0;
+                    });
+                  }
+                });
+              }
+            }
+          }
+
+          if (totalCost >= min && totalCost <= max) {
+            const div = document.createElement('div');
+            div.classList.add('trip');
+            div.innerHTML = `<h2>${user.id} - ${trip.id}</h2><p>Total Cost: ₹${totalCost}</p>`;
+            resultsContainer.appendChild(div);
+          }
+        });
+      });
+    });
+  });
+}
+</script>
+
+</body>
+</html>

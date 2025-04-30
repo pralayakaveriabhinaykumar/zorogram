@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- bootsrtap css -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="search.css" rel="stylesheet">
+    <!-- icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+    <link rel="icon" href="logo.png" type="img/png" >
+</head>
+<body>
+<!-- start of navBar -->
+  <nav class="navbar navbar-expand-lg fixed-top" style="position: fixed; background-color: #fff; border-radius: 20px; margin: 10px 10px;">
+    <div class="container-fluid">
+      <a class="navbar-brand me-auto" href="#">Zorogram</a>
+      <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h3 class="offcanvas-title" id="offcanvasNavbarLabel">Zorogram</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+          <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+            <li class="nav-item">
+              <a class="nav-link mx-lg-2 active" id="home" aria-current="page" href="index.html"><i class="fas fa-home"></i>Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link mx-lg-2" id="search" href="search.html"><i class="fas fa-camera-retro"></i>Search</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link mx-lg-2" href="profile.html"><i class="fas fa-user"></i>Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link mx-lg-2" id="about" href="about.html"><i class="fas fa-info-circle"></i>About</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <a href="loginPage.html" class="login-button">Login</a>
+
+        <div class="user-container" style="display: none;">
+        <span class="user-email" style="margin-right: 20px; font-size: 20px;"></span>
+        <button onclick="logout()" class="logout">
+            <!-- <img src="logout.jpg" alt="Logout" class="logout-image" /> -->
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #009970; width: 20px; height: 20px;  "></i>
+        </button>
+        </div>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+    </div>
+   
+  </nav>
+<!-- end of navBar -->
+
+<!-- start of search module -->
+<div  style="color: #009970;font-size: larger; display: flex; margin-top: 250px; margin-bottom: 50px; justify-content: center;">
+    <h2>Welcome. Find your next trip itinerary</h2>
+</div>
+
+<!-- Filter Selection -->
+<div class="search-div">
+    <div class="trip-filter" style=" width: 60%;">
+      <ul>
+          <li><a href="#destination"><i class="fa-solid fa-plane-departure"></i> Destination</a></li>
+          <li><a href="#budget"><i class="fa-solid fa-indian-rupee-sign"></i> Budget</a></li>
+          <li><a href="#username"><i class="fa-solid fa-user-group"></i> Username</a></li>
+          <li><a href="#days"><i class="fa-solid fa-user-group"></i> No of Days</a></li>
+      </ul>
+    </div>
+    <!-- Dynamic Filtering Options -->
+    <div class="trip-filter-container" style="display: flex; justify-content: center; height: 50%; width: 50%;">
+    <!-- 📚 Search Filters -->
+    <!-- No of Days Filter -->
+        <div id="days" class="filter">
+        <input type="text" id="search-noofdays" placeholder="Find by number of days" />
+        <button type="button" onclick="searchDays()" >🔍</button>
+        </div>
+
+        <!-- Destination Filter -->
+        <div id="destination" class="filter">
+        <input type="text" id="search-destination" placeholder="Find by destination" />
+        <button type="button" onclick="searchDestination()" >🔍</button>
+        </div>
+
+        <!-- Budget Filter -->
+        <div id="budget" class="filter">
+        <input type="number" id="min-budget" placeholder="Min Budget (₹)" style="width:50%; padding: 8px;"/>
+        <input type="number" id="max-budget" placeholder="Max Budget (₹)" style="width: 38%; padding: 8px;"/>
+        <button type="button" onclick="searchBudget()" >🔍</button>
+        </div>
+
+        <!-- 👨‍💻 Username Filter -->
+        <div id="username" class="filter">
+        <input type="text" id="search-username" placeholder="Find by username" />
+        <button type="button" onclick="searchUser()" >🔍</button>
+        </div>
+    </div>
+</div>
+
+<!-- bootstrap -->
+<script src="https://cdn.lordicon.com/lordicon.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script type="module" src="search.js" defer></script>
+
+</body>
+</html>

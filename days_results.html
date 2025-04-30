@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Days Search Results</title>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .trip { border: 2px solid #ccc; padding: 15px; margin-bottom: 20px; border-radius: 10px; }
+  </style>
+</head>
+<body>
+
+<h1 id="page-title">Searching by Days...</h1>
+<div id="resultsContainer"></div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBVNJzEZQyY0RCZlkfrqKrKdIggQrx62KU",
+  authDomain: "zorogram-e0eea.firebaseapp.com",
+  projectId: "zorogram-e0eea",
+  storageBucket: "zorogram-e0eea.appspot.com",
+  messagingSenderId: "3495535292",
+  appId: "1:3495535292:web:3c8c21807fbfd1d3d026b9",
+  measurementId: "G-7YFSQZZ72G"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const params = new URLSearchParams(window.location.search);
+const days = Number(params.get('days'));
+
+const resultsContainer = document.getElementById('resultsContainer');
+
+if (!days) {
+  document.getElementById('page-title').textContent = "Invalid number of days.";
+} else {
+  document.getElementById('page-title').textContent = `Trips with ${days} days`;
+
+  db.listCollections().then(users => {
+    users.forEach(user => {
+      db.collection(user.id).get().then(trips => {
+        trips.forEach(trip => {
+          if (trip.data().total_days === days) {
+            const div = document.createElement('div');
+            div.classList.add('trip');
+            div.innerHTML = `<h2>${user.id} - ${trip.id}</h2><p>Total Days: ${days}</p>`;
+            resultsContainer.appendChild(div);
+          }
+        });
+      });
+    });
+  });
+}
+</script>
+
+</body>
+</html>
