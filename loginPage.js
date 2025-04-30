@@ -16,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
+// === Show/Hide Password Logic ===
 function pass(id, iconId) {
   const x = document.getElementById(id);
   const icon = document.getElementById(iconId);
@@ -28,6 +29,7 @@ function pass(id, iconId) {
   }
 }
 
+// === Display Alert Messages ===
 function displayResponse(success, message) {
   document.querySelector('.Page_response').style.display = 'block';
   document.querySelector('.response_msg').innerText = message;
@@ -38,7 +40,7 @@ function displayResponse(success, message) {
   }, 3000);
 }
 
-// Signup Function with Debug Logs
+// === Signup Function ===
 window.sign_up_user = function (event) {
   event.preventDefault();
 
@@ -48,30 +50,22 @@ window.sign_up_user = function (event) {
   const password = formData.get('pswd');
   const rePassword = formData.get('re-pswd');
 
-  console.log("Signup: Collected email:", email);
-  console.log("Signup: Password and rePassword match?", password === rePassword);
-
   if (password !== rePassword) {
-    console.warn("Signup: Password mismatch!");
     displayResponse(false, 'Passwords do not match.');
     return;
   }
 
-  console.log("Signup: Attempting to create user...");
-
   createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
-      console.log("Signup: User created successfully!", userCredential.user);
       displayResponse(true, 'User registered successfully!');
       form.reset();
     })
     .catch((error) => {
-      console.error("Signup Error:", error.code, error.message);
       displayResponse(false, error.message);
     });
 }
 
-// Login Function with Debug Logs
+// === Login Function (with persistence) ===
 window.validateLoginForm = function (event) {
   event.preventDefault();
 
@@ -80,18 +74,21 @@ window.validateLoginForm = function (event) {
   const email = formData.get('email');
   const password = formData.get('pswd');
 
-  console.log("Login: Attempting login with email:", email);
   signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    console.log("Login: Success! User logged in:", userCredential.user);
-    displayResponse(true, 'Login successful!');
-    form.reset();
-    // Redirect to index.html
-    setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1000); // Optional short delay to show message
-  })
-  .catch((error) => {
-    console.error("Login Error:", error.code, error.message);
-    displayResponse(false, error.message);
-  });}
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      // ✅ Save login info to localStorage
+      localStorage.setItem("userEmail", user.email);
+
+      displayResponse(true, 'Login successful!');
+      form.reset();
+
+      setTimeout(() => {
+        window.location.href = 'index.html'; // or dashboard.html
+      }, 1000);
+    })
+    .catch((error) => {
+      displayResponse(false, error.message);
+    });
+}
